@@ -30,6 +30,7 @@
     "hmpo-model": "^0.7.0",
     "hogan.js": "^3.0.2",
     "i18n-lookup": "^0.1.0",
+    "moment": "^2.15.2",
     "underscore": "^1.8.2"
   },
   "devDependencies": {
