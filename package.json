@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "unit": "mocha test/. --recursive --require test/helpers",
     "cover": "istanbul cover _mocha -- -R dot test/. --recursive --require test/helpers",
-    "check-coverage": "istanbul check-coverage --statement 85.53 --branch 81.58 --function 79.17 --line 86.21",
+    "check-coverage": "istanbul check-coverage --statement 85.53 --branch 81.58 --function 66.67 --line 86.21",
     "snyk": "snyk test",
     "snyk:dev": "snyk test --dev"
   },
@@ -27,19 +27,19 @@
     "debug": "^2.1.2",
     "express": "^4.12.2",
     "hof-form-controller": "^1.0.0",
-    "hmpo-model": "^0.7.0",
+    "hof-model": "^2.0.0",
     "hogan.js": "^3.0.2",
     "i18n-lookup": "^0.1.0",
-    "underscore": "^1.8.2"
+    "lodash": "^4.17.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "^2.10.2",
+    "eslint-config-homeoffice": "^2.0.0",
     "istanbul": "^0.4.3",
     "mocha": "^3.1.2",
     "reqres": "^1.2.0",
-    "sinon": "^1.14.1",
-    "sinon-chai": "^2.7.0",
+    "sinon": "^1.17.6",
+    "sinon-chai": "^2.8.0",
     "snyk": "^1.14.3"
   }
 }

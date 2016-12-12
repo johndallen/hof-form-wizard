@@ -1,8 +1,13 @@
-var reqres = require('reqres'),
-    SessionModel = require('../../lib/model');
+'use strict';
 
-module.exports = function (settings) {
-    var req = reqres.req(settings);
-    req.sessionModel = req.sessionModel || new SessionModel({}, { session: req.session, key: 'hof-wizard-test' });
-    return req;
+const reqres = require('reqres');
+const SessionModel = require('../../lib/model');
+
+module.exports = settings => {
+  const req = reqres.req(settings);
+  req.sessionModel = req.sessionModel || new SessionModel({}, {
+    session: req.session,
+    key: 'hof-wizard-test'
+  });
+  return req;
 };
