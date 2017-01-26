@@ -28,8 +28,8 @@
     "csrf": "^3.0.2",
     "debug": "^2.1.2",
     "express": "^4.12.2",
-    "hof-form-controller": "^1.0.0",
     "hof-model": "^2.0.0",
+    "hof-controllers": "^6.0.0",
     "hogan.js": "^3.0.2",
     "i18n-lookup": "^0.1.0",
     "lodash": "^4.17.2"
