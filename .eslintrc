@@ -2,6 +2,7 @@ extends:
 - "homeoffice/config/default"
 
 rules:
+  no-const-assign: error
   object-curly-spacing:
     - error
     - always
