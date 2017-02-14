@@ -65,7 +65,7 @@ The minimum amount of configuration for a wizard step is the `next` property to 
 * `fields` - specifies which of the fields from the field definition list are applied to this step. Form inputs which are not named on this list will not be processed. Default: `[]`
 * `template` - Specifies the template to render for GET requests to this step. Defaults to the route (without trailing slash)
 * `backLink` - Specifies the location of the step previous to this one. If not specified then an algorithm is applied which checks the previously visited steps which have the current step set as `next`.
-* `behaviours` - A single behaviour, or an array of behaviours to be mixed into the base controller to extend functionality.
+* `behaviours` - A single behaviour, or an array of behaviours to be mixed into the base controller to extend functionality. If an array of behaviours is given, they are applied left-to-right, so calling super in the right-most behaviour will point to the previous behaviour in the array.
 * `forks` - Specifies a list of forks that can be taken depending on a particular field value or conditional function - See  [handling forking journeys](https://github.com/UKHomeOffice/passports-form-controller#handles-journey-forking) in hof-form-controller.
 
 ### Additional field options
@@ -91,11 +91,13 @@ Creating a behaviour:
 // behaviour-one.js
 
 module.exports = SuperClass => class extends SuperClass {
-  constructor() {
-    super();
-    this.use((req, res, next) => {
-      console.log(req.method, req.url);
-      next();
+  getValues(req, res, callback) {
+    super.getValues(req, res, (err, values) => {
+      if (err) {
+        return callback(err);
+      }
+      const errorValues = req.sessionModel.get('errorValues') || {};
+      return callback(null, Object.assign({}, values, errorValues))
     });
   }
 }
