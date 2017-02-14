@@ -3,6 +3,7 @@ extends:
 
 rules:
   no-const-assign: error
+  no-underscore-dangle: off
   object-curly-spacing:
     - error
     - always

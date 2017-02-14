@@ -65,7 +65,7 @@ The minimum amount of configuration for a wizard step is the `next` property to 
 * `fields` - specifies which of the fields from the field definition list are applied to this step. Form inputs which are not named on this list will not be processed. Default: `[]`
 * `template` - Specifies the template to render for GET requests to this step. Defaults to the route (without trailing slash)
 * `backLink` - Specifies the location of the step previous to this one. If not specified then an algorithm is applied which checks the previously visited steps which have the current step set as `next`.
-* `controller` - The constructor for the controller to be used for this step's request handling. The default is an extension of the [hof-form-controller](https://www.npmjs.com/package/hof-form-controller), which is exported as a `Controller` property of this module. If custom behaviour is required for a particular form step then custom extensions can be defined - see [Custom Controllers](#custom-controllers)
+* `behaviours` - A single behaviour, or an array of behaviours to be mixed into the base controller to extend functionality.
 * `forks` - Specifies a list of forks that can be taken depending on a particular field value or conditional function - See  [handling forking journeys](https://github.com/UKHomeOffice/passports-form-controller#handles-journey-forking) in hof-form-controller.
 
 ### Additional field options
@@ -80,34 +80,37 @@ A number of options can be passed to the wizard as a third argument to customise
 
 `translate` - provide a function for translating validation error codes into usable messages. Previous implementations have used [i18next](https://www.npmjs.com/package/i18next) to do translations.
 `templatePath` - provides the location within `app.get('views')` that templates are stored. Default `pages`.
-`controller` - override the [default controller](./lib/controller.js) for steps without a controller specified.
+* `controller` - The constructor for the controller to be used for request handling. The default is an extension of the [hof-form-controller](https://www.npmjs.com/package/hof-form-controller), which is exported as a `Controller` property of this module. If custom behaviour is required for a particular form step then custom extensions can be defined by passing a list of Behaviours - see [Behaviours](#behaviours)
 `params` - define a suffix for the routes for supporting additional URL parameters.
 
-### Custom Controllers
+### Behaviours
 
-Creating a custom controller:
+Creating a behaviour:
 
-```javascript
-// controller.js
-var util = require('util'),
-    Controller = require('hof-form-wizard').Controller;
+```js
+// behaviour-one.js
 
-function CustomController() {
-  Controller.apply(this, arguments);
-  // extra middleware to log the request
-  this.use(function (req, res, next) {
-    console.log(req.method, req.url);
-    next();
-  });
+module.exports = SuperClass => class extends SuperClass {
+  constructor() {
+    super();
+    this.use((req, res, next) => {
+      console.log(req.method, req.url);
+      next();
+    });
+  }
 }
-
-util.inherits(CustomController)
-
-module.exports = CustomController
 ```
 
-Examples of custom controllers can be found in the [example app](./example/controllers)
+```js
+//index.js
+const app = require('express')();
+const Wizard = require('hof-form-wizard')
+const BehaviourOne = require('./behaviours/behaviour-one')
+const BehaviourTwo = require('./behaviours/behaviour-two')
 
-## Example app
-
-An example application can be found in [the ./example directory](./example). To run this, follow the instructions in the [README](./example/README.md).
+app.use(Wizard({
+  '/': {
+    behaviours: [BehaviourOne, BehaviourTwo]
+  }
+}, {}, {}));
+```
