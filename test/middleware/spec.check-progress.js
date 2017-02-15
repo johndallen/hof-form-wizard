@@ -2,7 +2,7 @@
 
 const checkProgress = require('../../lib/middleware/check-progress');
 const Model = require('../../lib/model');
-const Controller = require('hof-controllers').base;
+const Controller = require('hof-form-controller');
 const helpers = require('../../lib/util/helpers');
 
 const request = require('../helpers/request');

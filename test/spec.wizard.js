@@ -2,6 +2,7 @@
 
 const Wizard = require('../lib/wizard');
 const StubController = require('./helpers/controller');
+const Behaviour = require('./helpers/behaviour');
 const request = require('./helpers/request');
 const response = require('./helpers/response');
 
@@ -16,15 +17,18 @@ describe('Form Wizard', () => {
   describe('settings', () => {
     beforeEach(() => {
       obj = {
-        controller: StubController()
+        controller: StubController(),
+        Behaviour
       };
       sinon.spy(obj, 'controller');
       wizard = Wizard({
         '/': {
           template: 'template',
-          controller: obj.controller
         }
-      }, {}, { templatePath: '/a/path' });
+      }, {}, {
+        templatePath: '/a/path',
+        controller: obj.controller
+      });
     });
 
     it('initialises a new controller', () => {
@@ -46,10 +50,9 @@ describe('Form Wizard', () => {
     it('doesn\'t prepend template path if omitted', () => {
       wizard = Wizard({
         '/': {
-          template: 'template',
-          controller: obj.controller
+          template: 'template'
         }
-      }, {}, {});
+      }, {}, { controller: obj.controller });
       obj.controller.should.have.been.calledWithMatch({
         template: 'template'
       });
@@ -63,10 +66,12 @@ describe('Form Wizard', () => {
       next = sinon.stub();
       requestHandler = sinon.stub().yields();
       wizard = Wizard({
-        '/': {
-          controller: StubController({ requestHandler: requestHandler })
-        }
-      }, {}, { name: 'test', csrf: false });
+        '/': {}
+      }, {}, {
+        name: 'test',
+        csrf: false,
+        controller: StubController({ requestHandler })
+      });
     });
 
     it('creates a namespace on the session', done => {
@@ -94,15 +99,56 @@ describe('Form Wizard', () => {
     });
   });
 
+  describe('behaviours', () => {
+    beforeEach(() => {
+      sinon.spy(obj, 'Behaviour');
+    });
+
+    afterEach(() => {
+      obj.Behaviour.restore();
+    });
+
+    it('accepts a single behaviour', () => {
+      Wizard({
+        '/': {
+          behaviours: obj.Behaviour
+        }
+      }, {}, {});
+      obj.Behaviour.should.have.been.calledOnce;
+    });
+
+    it('accetps multiple behaviours', () => {
+      Wizard({
+        '/': {
+          behaviours: [obj.Behaviour, obj.Behaviour, obj.Behaviour]
+        }
+      }, {}, {});
+      obj.Behaviour.should.have.been.calledThrice;
+    });
+
+    it('is passed the super class', () => {
+      Wizard({
+        '/': {
+          behaviours: obj.Behaviour
+        }
+      }, {}, {
+        controller: obj.controller
+      });
+      obj.Behaviour.should.have.been.calledOnce.and.calledWithExactly(obj.controller);
+    });
+  });
+
   describe('fields', () => {
     it('includes all fields in fields option', () => {
       const constructor = sinon.stub();
       wizard = Wizard({
         '/': {
-          controller: StubController({ constructor }),
           fields: ['field1', 'field2']
         }
-      }, { field1: { validate: 'required' } }, { name: 'test-wizard' });
+      }, { field1: { validate: 'required' } }, {
+        name: 'test-wizard',
+        controller: StubController({ constructor })
+      });
 
       constructor.args[0][0].fields.should.eql({
         field1: { validate: 'required' },
@@ -127,10 +173,12 @@ describe('Form Wizard', () => {
         next();
       };
       wizard = Wizard({
-        '/step': {
-          controller: StubController({ requestHandler })
-        }
-      }, {}, { name: 'test-wizard', params: '/:action?' });
+        '/step': {}
+      }, {}, {
+        name: 'test-wizard',
+        params: '/:action?',
+        controller: StubController({ requestHandler })
+      });
       wizard(req, res, err => {
         expect(err).not.to.be.ok;
         done(err);
@@ -147,10 +195,12 @@ describe('Form Wizard', () => {
         next();
       };
       wizard = Wizard({
-        '/step': {
-          controller: StubController({ requestHandler })
-        }
-      }, {}, { name: 'test-wizard', params: '/:action?' });
+        '/step': {}
+      }, {}, {
+        name: 'test-wizard',
+        params: '/:action?',
+        controller: StubController({ requestHandler })
+      });
       wizard(req, res, err => {
         expect(err).not.to.be.ok;
         done(err);
@@ -210,10 +260,13 @@ describe('Form Wizard', () => {
       next = sinon.stub();
       requestHandler = sinon.stub().yields();
       wizard = Wizard({
-        '/': {
-          controller: StubController({ requestHandler })
-        }
-      }, {}, { name: 'test', csrf: false, translate: 'i18ntranslator' });
+        '/': {}
+      }, {}, {
+        name: 'test',
+        csrf: false,
+        translate: 'i18ntranslator',
+        controller: StubController({ requestHandler })
+      });
     });
 
     describe('applying a translate', () => {
