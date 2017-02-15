@@ -67,6 +67,7 @@ The minimum amount of configuration for a wizard step is the `next` property to 
 * `backLink` - Specifies the location of the step previous to this one. If not specified then an algorithm is applied which checks the previously visited steps which have the current step set as `next`.
 * `behaviours` - A single behaviour, or an array of behaviours to be mixed into the base controller to extend functionality. If an array of behaviours is given, they are applied left-to-right, so calling super in the right-most behaviour will point to the previous behaviour in the array.
 * `forks` - Specifies a list of forks that can be taken depending on a particular field value or conditional function - See  [handling forking journeys](https://github.com/UKHomeOffice/passports-form-controller#handles-journey-forking) in hof-form-controller.
+* `allowPostComplete` - If set to true allows a step to be accessed after the application has been completed. If not set then accessing this step will reset the session.
 
 ### Additional field options
 
@@ -116,3 +117,30 @@ app.use(Wizard({
   }
 }, {}, {}));
 ```
+
+### Predefined behaviours
+
+Some behaviours are built-in to the Wizard, and can be declared by passing a string as a behaviour.
+
+These are:
+
+* `complete` - if set to a step then this step will mark the application as complete. The user will then have their session reset if they attempt to access any step of the form. Steps which follow a complete-ing step should have their `allowPostComplete` option et to true.
+
+
+```js
+//index.js
+const app = require('express')();
+const Wizard = require('hof-form-wizard')
+
+app.use(Wizard({
+  ...
+  '/confirm-submission': {
+    behaviours: ['complete'],
+    next: '/finished'
+  },
+  '/finished': {
+    allowPostComplete: true
+  }
+}, {}, {}));
+```
+

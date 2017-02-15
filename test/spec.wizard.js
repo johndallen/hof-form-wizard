@@ -1,6 +1,7 @@
 'use strict';
 
 const Wizard = require('../lib/wizard');
+const Behaviours = require('../lib/behaviours');
 const StubController = require('./helpers/controller');
 const Behaviour = require('./helpers/behaviour');
 const request = require('./helpers/request');
@@ -135,6 +136,18 @@ describe('Form Wizard', () => {
         controller: obj.controller
       });
       obj.Behaviour.should.have.been.calledOnce.and.calledWithExactly(obj.controller);
+    });
+
+    it('maps predefined strings to behaviours', () => {
+      sinon.spy(Behaviours, 'complete');
+      Wizard({
+        '/': {
+          behaviours: 'complete'
+        }
+      }, {}, {
+        controller: obj.controller
+      });
+      Behaviours.complete.should.have.been.calledOnce.and.calledWithExactly(obj.controller);
     });
   });
 
