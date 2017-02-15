@@ -102,21 +102,10 @@ describe('Form Wizard', () => {
   describe('behaviours', () => {
     beforeEach(() => {
       sinon.spy(obj, 'Behaviour');
-      sinon.stub(console, 'warn');
     });
 
     afterEach(() => {
       obj.Behaviour.restore();
-      console.warn.restore();
-    });
-
-    it('logs a deprecated warning if a custom controller is given', () => {
-      Wizard({
-        '/': {
-          controller: StubController()
-        }
-      }, {}, {});
-      console.warn.should.have.been.calledTwice;
     });
 
     it('accepts a single behaviour', () => {
