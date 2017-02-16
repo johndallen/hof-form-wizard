@@ -22,6 +22,13 @@ describe('Check complete middleware', () => {
     res.redirect.should.have.been.calledWith('/first');
   });
 
+  it('includes req.baseUrl in redirect', () => {
+    req.baseUrl = '/foo';
+    req.sessionModel.set(APPLICATION_COMPLETE, true);
+    middleware(req, res, () => {});
+    res.redirect.should.have.been.calledWith('/foo/first');
+  });
+
   it('passes through if the model is not marked as complete', () => {
     const stub = sinon.stub();
     req.sessionModel.unset(APPLICATION_COMPLETE);
