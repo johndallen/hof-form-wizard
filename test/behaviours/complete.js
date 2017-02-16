@@ -19,15 +19,34 @@ describe('Complete Behaviour', () => {
   beforeEach(() => {
     req = request();
     res = response();
-    controller = new Controller({});
-    sinon.stub(BaseController.prototype, 'successHandler').yieldsAsync();
   });
 
-  afterEach(() => {
-    BaseController.prototype.successHandler.restore();
+  describe('constructor', () => {
+
+    it('sets the `allowPostComplete` option on the `next` step to true', () => {
+      const steps = {
+        '/one': {
+          next: '/two'
+        },
+        '/two': {
+        }
+      };
+      controller = new Controller({ steps, next: '/two' });
+      steps['/two'].allowPostComplete.should.equal(true);
+    });
+
   });
 
   describe('successHandler', () => {
+
+    beforeEach(() => {
+      controller = new Controller({});
+      sinon.stub(BaseController.prototype, 'successHandler').yieldsAsync();
+    });
+
+    afterEach(() => {
+      BaseController.prototype.successHandler.restore();
+    });
 
     it('marks session model as complete', (done) => {
       controller.successHandler(req, res, sandbox(() => {

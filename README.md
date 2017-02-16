@@ -124,8 +124,7 @@ Some behaviours are built-in to the Wizard, and can be declared by passing a str
 
 These are:
 
-* `complete` - if set to a step then this step will mark the application as complete. The user will then have their session reset if they attempt to access any step of the form. Steps which follow a complete-ing step should have their `allowPostComplete` option et to true.
-
+* `complete` - if applied to a step then this step will mark the application as complete. The user will then have their session reset if they attempt to access any step of the form. The `next` step of a completing step will always be accessible following completion. Any other steps which should also be accessible on a complete session should have their `allowPostComplete` option set to `true`.
 
 ```js
 //index.js
@@ -138,7 +137,8 @@ app.use(Wizard({
     behaviours: ['complete'],
     next: '/finished'
   },
-  '/finished': {
+  '/finished': {},
+  '/download-receipt': {
     allowPostComplete: true
   }
 }, {}, {}));
