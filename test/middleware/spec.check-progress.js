@@ -222,7 +222,7 @@ describe('middleware/check-session', () => {
       });
     });
 
-    describe('intertwined steps', () => {
+    describe('looping steps', () => {
       it('doesn\'t timeout when recursive route is possible', () => {
         steps = {
           '/step1': {
@@ -253,6 +253,28 @@ describe('middleware/check-session', () => {
         expect(() => {
           controller.emit('complete', req, res);
         }).to.not.throw();
+      });
+      it('doesn\'t invalidate looping journeys that are not being followed', () => {
+        steps = {
+          '/step1': {
+            next: '/step2'
+          },
+          '/step2': {
+            next: '/step3',
+            forks: [{
+              target: '/step1'
+            }]
+          },
+          '/step3': {}
+        };
+        controller = new Controller(Object.assign({ template: 'index' }, steps['/step2']));
+        Controller.prototype.getForkTarget.returns('/step3');
+        checkProgress('/step2', controller, steps, '/');
+        req.method = 'POST';
+        req.path = '/step2';
+        controller.emit('complete', req, res);
+        req.sessionModel.get('steps').should.contain('/step1');
+        req.sessionModel.get('steps').should.contain('/step2');
       });
     });
   });
