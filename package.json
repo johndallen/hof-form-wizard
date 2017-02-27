@@ -48,6 +48,7 @@
     "hof-govuk-template": "^1.0.0",
     "hof-template-mixins": "^3.3.0",
     "hof-template-partials": "^3.3.0",
+    "hof-util-autofill": "^1.0.1",
     "hogan-express-strict": "^0.5.4",
     "istanbul": "^0.4.3",
     "mocha": "^3.1.2",
