@@ -4,11 +4,11 @@
   "description": "routing and request handling for a multi-step form processes",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && npm run unit && npm run cover && npm run check-coverage",
+    "test": "npm run lint && npm run cover && npm run check-coverage && npm run test:functional",
     "lint": "eslint .",
-    "unit": "mocha test/. --recursive --require test/helpers",
-    "cover": "istanbul cover _mocha -- -R dot test/. --recursive --require test/helpers",
+    "cover": "istanbul cover _mocha -- --recursive --require test/helpers",
     "check-coverage": "istanbul check-coverage --statement 85.53 --branch 81.58 --function 66.67 --line 86.21",
+    "test:functional": "funkie mocha ./functional-tests --opts ./functional-tests/mocha.opts",
     "snyk:dev": "snyk test --dev",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect",
@@ -37,8 +37,18 @@
     "mixwith": "^0.1.1"
   },
   "devDependencies": {
+    "body-parser": "^1.16.1",
     "chai": "^3.5.0",
+    "cookie-parser": "^1.4.3",
     "eslint-config-homeoffice": "^2.0.0",
+    "express-partial-templates": "^0.2.0",
+    "express-session": "^1.15.1",
+    "funkie": "0.0.5",
+    "funkie-phantom": "0.0.1",
+    "hof-govuk-template": "^1.0.0",
+    "hof-template-mixins": "^3.3.0",
+    "hof-template-partials": "^3.3.0",
+    "hogan-express-strict": "^0.5.4",
     "istanbul": "^0.4.3",
     "mocha": "^3.1.2",
     "mocha-sandbox": "^1.0.0",
@@ -46,7 +56,8 @@
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
     "snyk": "^1.14.3",
-    "travis-conditions": "0.0.0"
+    "travis-conditions": "0.0.0",
+    "webdriverio": "^4.6.2"
   },
   "snyk": true
 }
