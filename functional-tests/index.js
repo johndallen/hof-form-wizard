@@ -34,26 +34,26 @@ describe('tests', () => {
       .then((url) => {
         assert.ok(url.includes('/confirm'));
       })
-      .url(`http://localhost:${port}/four/edit`)
+      .url(`http://localhost:${port}/two/edit`)
       .getUrl()
       .then((url) => {
-        assert.ok(url.includes('/four/edit'));
+        assert.ok(url.includes('/two/edit'));
       });
   });
 
   it('prevents accessing a looping step once the loop has been started', () => {
-    return browser.goto('/four')
+    return browser.goto('/two')
       .$('input[name="loop"][value="yes"]').click()
       .submitForm('form')
       .getUrl()
       .then((url) => {
-        assert.ok(url.includes('/three'));
+        assert.ok(url.includes('/one'));
       })
-      .url(`http://localhost:${port}/four`)
+      .url(`http://localhost:${port}/two`)
       .getUrl()
       .then((url) => {
-        assert.ok(!url.includes('/four'));
-        assert.ok(url.includes('/three'));
+        assert.ok(!url.includes('/two'));
+        assert.ok(url.includes('/one'));
       });
   });
 
@@ -63,7 +63,7 @@ describe('tests', () => {
       .then((url) => {
         assert.ok(url.includes('confirm'));
       })
-      .url(`http://localhost:${port}/six/edit`)
+      .url(`http://localhost:${port}/three/edit`)
       .$('input[name="fork"][value="yes"]').click()
       .submitForm('form')
       .url(`http://localhost:${port}/confirm`)

@@ -4,21 +4,13 @@ module.exports = {
   steps: {
     '/one': {
       next: '/two',
-      fields: ['fullname', 'country']
+      fields: ['field-1']
     },
     '/two': {
       next: '/three',
-      fields: ['radios']
-    },
-    '/three': {
-      next: '/four',
-      fields: ['select']
-    },
-    '/four': {
-      next: '/six',
       forks: [
         {
-          target: '/three',
+          target: '/one',
           condition: {
             field: 'loop',
             value: 'yes'
@@ -27,12 +19,12 @@ module.exports = {
       ],
       fields: ['loop']
     },
-    '/six': {
-      next: '/seven-1',
+    '/three': {
+      next: '/four-1',
       fields: ['fork'],
       forks: [
         {
-          target: '/seven-2',
+          target: '/four-2',
           condition: {
             field: 'fork',
             value: 'yes'
@@ -40,13 +32,13 @@ module.exports = {
         }
       ]
     },
-    '/seven-1': {
-      next: '/confirm',
-      fields: ['field-1']
-    },
-    '/seven-2': {
+    '/four-1': {
       next: '/confirm',
       fields: ['field-2']
+    },
+    '/four-2': {
+      next: '/confirm',
+      fields: ['field-3']
     },
     '/confirm': {
       behaviours: 'complete',
@@ -55,12 +47,6 @@ module.exports = {
     '/confirmation': {}
   },
   fields: {
-    fullname: {
-      validate: 'required'
-    },
-    country: {
-      validate: 'required'
-    },
     loop: {
       mixin: 'radio-group',
       options: ['yes', 'no'],
@@ -69,20 +55,6 @@ module.exports = {
     fork: {
       mixin: 'radio-group',
       options: ['yes', 'no'],
-      validate: 'required'
-    },
-    select: {
-      mixin: 'select',
-      options: [
-        { label: 'Select...', value: '' },
-        { label: 'Yes', value: 'yes' },
-        { label: 'No', value: 'no' }
-      ],
-      validate: 'required'
-    },
-    radios: {
-      mixin: 'radio-group',
-      options: ['one', 'two', 'three'],
       validate: 'required'
     }
   }
