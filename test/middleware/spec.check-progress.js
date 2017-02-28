@@ -28,18 +28,18 @@ describe('middleware/check-session', () => {
       '/three': { next: '/four' },
       '/four': {}
     };
-    sinon.stub(helpers, 'getRouteSteps').returns(['/one', '/two']);
     sinon.stub(Controller.prototype, 'getForkTarget');
   });
 
   afterEach(() => {
-    helpers.getRouteSteps.restore();
     Controller.prototype.getForkTarget.restore();
   });
 
   it('calls getRouteSteps helper with route and steps', () => {
+    sinon.stub(helpers, 'getRouteSteps').returns(['/one', '/two']);
     checkProgress('/two', controller, steps, '/three');
     helpers.getRouteSteps.should.have.been.calledWithExactly('/two', steps);
+    helpers.getRouteSteps.restore();
   });
 
   it('calls callback with no arguments if prerequisite steps are complete', done => {
@@ -53,10 +53,29 @@ describe('middleware/check-session', () => {
 
   it('calls callback with MISSING_PREREQ error code if accessing step that has not had prerequisite steps complete', done => {
     req.sessionModel.set('steps', []);
-    helpers.getRouteSteps.returns(['/two']);
     const middleware = checkProgress('/three', controller, steps, '/one');
     middleware(req, res, err => {
       err.code.should.equal('MISSING_PREREQ');
+      done();
+    });
+  });
+
+  it('can handle the first step being part of a loop', done => {
+    steps = {
+      '/one': { next: '/two' },
+      '/two': {
+        next: '/three',
+        forks: [
+          { target: '/one', condition: { field: 'loop', value: 'yes' } }
+        ]
+      },
+      '/three': { next: '/four' },
+      '/four': {}
+    };
+    req.sessionModel.unset('steps');
+    const middleware = checkProgress('/one', controller, steps, '/one');
+    middleware(req, res, err => {
+      expect(err).to.be.undefined;
       done();
     });
   });
@@ -222,7 +241,7 @@ describe('middleware/check-session', () => {
       });
     });
 
-    describe('intertwined steps', () => {
+    describe('looping steps', () => {
       it('doesn\'t timeout when recursive route is possible', () => {
         steps = {
           '/step1': {
@@ -253,6 +272,28 @@ describe('middleware/check-session', () => {
         expect(() => {
           controller.emit('complete', req, res);
         }).to.not.throw();
+      });
+      it('doesn\'t invalidate looping journeys that are not being followed', () => {
+        steps = {
+          '/step1': {
+            next: '/step2'
+          },
+          '/step2': {
+            next: '/step3',
+            forks: [{
+              target: '/step1'
+            }]
+          },
+          '/step3': {}
+        };
+        controller = new Controller(Object.assign({ template: 'index' }, steps['/step2']));
+        Controller.prototype.getForkTarget.returns('/step3');
+        checkProgress('/step2', controller, steps, '/');
+        req.method = 'POST';
+        req.path = '/step2';
+        controller.emit('complete', req, res);
+        req.sessionModel.get('steps').should.contain('/step1');
+        req.sessionModel.get('steps').should.contain('/step2');
       });
     });
   });
