@@ -14,3 +14,7 @@
 
 * Fixes bugs with forking steps that fork to a preceding step (creating a closed loop) invalidating themselves on submission.
 * Adds some functional tests to test this behaviour.
+
+## v3.2.2 - 2017-03-01
+
+* Fixes bug that caused looping steps to invalidate themselves when submitted as part of an edit journey
