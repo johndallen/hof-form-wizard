@@ -9,3 +9,8 @@
 ## v2.0.1 - 2017-01-27
 
 * Fix bug with constant values being assigned
+
+## v3.2.1 - 2017-03-01
+
+* Fixes bugs with forking steps that fork to a preceding step (creating a closed loop) invalidating themselves on submission.
+* Adds some functional tests to test this behaviour.
