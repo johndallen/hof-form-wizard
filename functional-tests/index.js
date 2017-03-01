@@ -73,4 +73,41 @@ describe('tests', () => {
       });
   });
 
+  it('does not autocomplete confirm page', () => {
+    return browser.goto('/confirm', { loop: 'no', fork: 'no' })
+      .getUrl()
+      .then((url) => {
+        assert.ok(url.includes('confirm'));
+      })
+      .url(`http://localhost:${port}/confirmation`)
+      .getUrl()
+      .then((url) => {
+        assert.ok(url.includes('/confirm'));
+      });
+  });
+
+  describe('with loop preceding confirm page', () => {
+
+    before(() => {
+      app = App(require('./apps/loop-before-confirm')).listen();
+      port = app.address().port;
+    });
+
+    after(() => {
+      app.close();
+    });
+
+    it('allows returning to the confirmation page from a loop page in an edit journey', () => {
+      return browser.goto('/confirm')
+        .url(`http://localhost:${port}/two/edit`)
+        .$('input[name="loop"][value="no"]').click()
+        .submitForm('form')
+        .getUrl()
+        .then((url) => {
+          assert.ok(url.includes('/confirm'));
+        });
+    });
+
+  });
+
 });
