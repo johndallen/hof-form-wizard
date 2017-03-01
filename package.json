@@ -1,6 +1,6 @@
 {
   "name": "hof-form-wizard",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "routing and request handling for a multi-step form processes",
   "main": "index.js",
   "scripts": {
