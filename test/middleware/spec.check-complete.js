@@ -8,11 +8,13 @@ const response = require('../helpers/response');
 describe('Check complete middleware', () => {
   let req;
   let res;
+  let next;
   let middleware;
 
   beforeEach(() => {
     req = request();
     res = response();
+    next = sinon.stub();
     middleware = check('/', { options: {} }, {}, '/first');
   });
 
@@ -20,6 +22,12 @@ describe('Check complete middleware', () => {
     req.sessionModel.set(APPLICATION_COMPLETE, true);
     middleware(req, res, () => {});
     res.redirect.should.have.been.calledWith('/first');
+  });
+
+  it('does not pass through if the model is marked as complete', () => {
+    req.sessionModel.set(APPLICATION_COMPLETE, true);
+    middleware(req, res, next);
+    next.should.not.have.been.called;
   });
 
   it('includes req.baseUrl in redirect', () => {
@@ -30,20 +38,18 @@ describe('Check complete middleware', () => {
   });
 
   it('passes through if the model is not marked as complete', () => {
-    const stub = sinon.stub();
     req.sessionModel.unset(APPLICATION_COMPLETE);
-    middleware(req, res, stub);
+    middleware(req, res, next);
     res.redirect.should.not.have.been.called;
-    stub.should.have.been.calledWithExactly();
+    next.should.have.been.calledWithExactly();
   });
 
   it('passes through if the controller has an `allowPostComplete` option set to true', () => {
-    const stub = sinon.stub();
     middleware = check('/', { options: { allowPostComplete: true } }, {}, '/first');
     req.sessionModel.unset(APPLICATION_COMPLETE);
-    middleware(req, res, stub);
+    middleware(req, res, next);
     res.redirect.should.not.have.been.called;
-    stub.should.have.been.calledWithExactly();
+    next.should.have.been.calledWithExactly();
   });
 
 });
