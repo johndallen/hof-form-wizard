@@ -110,4 +110,28 @@ describe('tests', () => {
 
   });
 
+  describe('with looping step beore and after the loop', () => {
+
+    before(() => {
+      app = App(require('./apps/looping-step-before-loop')).listen();
+      port = app.address().port;
+    });
+
+    after(() => {
+      app.close();
+    });
+
+    it.only('allows accessing the loop through first looping step', () => {
+      return browser.url(`http://localhost:${port}/loop`)
+        .$('input[name="loop"][value="yes"]').click()
+        .submitForm('form')
+        .getUrl()
+        .then((url) => {
+          console.log(url);
+          assert.ok(url.includes('/two'));
+        });
+    });
+
+  });
+
 });

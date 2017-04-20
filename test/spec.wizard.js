@@ -28,7 +28,8 @@ describe('Form Wizard', () => {
         }
       }, {}, {
         templatePath: '/a/path',
-        controller: obj.controller
+        controller: obj.controller,
+        formatters: 'escape'
       });
     });
 
@@ -45,6 +46,27 @@ describe('Form Wizard', () => {
     it('passes the route to the controller', () => {
       obj.controller.should.have.been.calledWithMatch({
         route: '/'
+      });
+    });
+
+    it('passes default formatters to the controller', () => {
+      obj.controller.should.have.been.calledWithMatch({
+        defaultFormatters: ['escape']
+      });
+    });
+
+    it('passes an array of default formatters to the controller', () => {
+      wizard = Wizard({
+        '/': {
+          template: 'template',
+        }
+      }, {}, {
+        templatePath: '/a/path',
+        controller: obj.controller,
+        formatters: ['escape', 'trim']
+      });
+      obj.controller.should.have.been.calledWithMatch({
+        defaultFormatters: ['escape', 'trim']
       });
     });
 

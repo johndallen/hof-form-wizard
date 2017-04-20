@@ -83,6 +83,7 @@ A number of options can be passed to the wizard as a third argument to customise
 `templatePath` - provides the location within `app.get('views')` that templates are stored. Default `pages`.
 * `controller` - The constructor for the controller to be used for request handling. The default is an extension of the [hof-form-controller](https://www.npmjs.com/package/hof-form-controller), which is exported as a `Controller` property of this module. If custom behaviour is required for a particular form step then custom extensions can be defined by passing a list of Behaviours - see [Behaviours](#behaviours)
 `params` - define a suffix for the routes for supporting additional URL parameters.
+`formatters` - defines a standard list of formatters to be applied to all field data. Default: `['trim', 'singlespaces', 'hyphens']` - see [formatters.js](https://github.com/UKHomeOfficeForms/hof-form-controller/blob/master/lib/formatting/formatters.js) for a list of available formatters.
 
 ### Behaviours
 
