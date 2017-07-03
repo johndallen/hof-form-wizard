@@ -73,6 +73,20 @@ describe('tests', () => {
       });
   });
 
+  it('can go back to confirm page after editing first step', () => {
+    return browser.goto('/confirm', { loop: 'no', fork: 'no' })
+      .getUrl()
+      .then((url) => {
+        assert.ok(url.includes('confirm'));
+      })
+      .url(`http://localhost:${port}/one/edit`)
+      .submitForm('form')
+      .getUrl()
+      .then((url) => {
+        assert.ok(url.includes('/confirm'));
+      });
+  });
+
   it('does not autocomplete confirm page', () => {
     return browser.goto('/confirm', { loop: 'no', fork: 'no' })
       .getUrl()
