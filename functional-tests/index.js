@@ -110,7 +110,7 @@ describe('tests', () => {
 
   });
 
-  describe('with looping step beore and after the loop', () => {
+  describe('with looping step before and after the loop', () => {
 
     before(() => {
       app = App(require('./apps/looping-step-before-loop')).listen();
