@@ -273,6 +273,7 @@ describe('middleware/check-session', () => {
           controller.emit('complete', req, res);
         }).to.not.throw();
       });
+
       it('doesn\'t invalidate looping journeys that are not being followed', () => {
         steps = {
           '/step1': {
@@ -294,6 +295,28 @@ describe('middleware/check-session', () => {
         controller.emit('complete', req, res);
         req.sessionModel.get('steps').should.contain('/step1');
         req.sessionModel.get('steps').should.contain('/step2');
+      });
+
+      it('doesn\'t invalidate itself if a looping step appears before an optional loop', () => {
+        steps = {
+          '/step1': {
+            forks: [{
+              target: '/step2'
+            }],
+            next: '/step3'
+          },
+          '/step2': {
+            next: '/step1'
+          },
+          '/step3': {}
+        };
+        controller = new Controller(Object.assign({ template: 'index' }, steps['/step1']));
+        Controller.prototype.getForkTarget.returns('/step2');
+        checkProgress('/step1', controller, steps, '/');
+        req.method = 'POST';
+        req.path = '/step1';
+        controller.emit('complete', req, res);
+        req.sessionModel.get('steps').should.contain('/step1');
       });
     });
   });
