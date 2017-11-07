@@ -82,6 +82,30 @@ describe('Form Wizard', () => {
     });
   });
 
+  describe('formatters', () => {
+    beforeEach(() => {
+      obj = {
+        controller: StubController(),
+        Behaviour
+      };
+      sinon.spy(obj, 'controller');
+      wizard = Wizard({
+        '/': {
+          template: 'template',
+        }
+      }, {}, {
+        templatePath: '/a/path',
+        controller: obj.controller
+      });
+    });
+
+    it('passes default formatters `trim`, `singlespaces`, `hyphens` to the controller if no formatters are supplied', () => {
+      obj.controller.should.have.been.calledWithMatch({
+        defaultFormatters: ['trim', 'singlespaces', 'hyphens']
+      });
+    });
+  });
+
   describe('session', () => {
     beforeEach(() => {
       req = request();
@@ -140,7 +164,7 @@ describe('Form Wizard', () => {
       obj.Behaviour.should.have.been.calledOnce;
     });
 
-    it('accetps multiple behaviours', () => {
+    it('accepts multiple behaviours', () => {
       Wizard({
         '/': {
           behaviours: [obj.Behaviour, obj.Behaviour, obj.Behaviour]
