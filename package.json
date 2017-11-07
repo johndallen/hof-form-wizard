@@ -1,16 +1,15 @@
 {
   "name": "hof-form-wizard",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "routing and request handling for a multi-step form processes",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && npm run cover && npm run check-coverage && npm run test:functional",
-    "test:unit": "_mocha",
-    "lint": "eslint .",
-    "cover": "istanbul cover _mocha -- --recursive --require test/helpers",
-    "check-coverage": "istanbul check-coverage --statement 85.53 --branch 81.58 --function 66.67 --line 86.21",
+    "test": "npm run test:lint && npm run test:unit && npm run test:check-coverage && npm run test:functional",
+    "test:lint": "eslint .",
+    "test:unit": "istanbul cover _mocha -- --recursive --require test/helpers",
+    "test:check-coverage": "istanbul check-coverage --statement 85.53 --branch 81.58 --function 66.67 --line 86.21",
     "test:functional": "funkie mocha ./functional-tests --opts ./functional-tests/mocha.opts",
-    "snyk:dev": "snyk test --dev",
+    "test:snyk": "snyk test --dev",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect",
     "ci": "travis-conditions"
