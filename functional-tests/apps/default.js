@@ -2,7 +2,14 @@
 
 module.exports = {
   steps: {
+    '/zero': {
+      next: '/one'
+    },
     '/one': {
+      next: '/one-a',
+      fields: ['field-1']
+    },
+    '/one-a': {
       next: '/two',
       fields: ['field-1']
     },

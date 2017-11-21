@@ -45,9 +45,10 @@ describe('tests', () => {
     return browser.goto('/two')
       .$('input[name="loop"][value="yes"]').click()
       .submitForm('form')
+      .submitForm('form')
       .getUrl()
       .then((url) => {
-        assert.ok(url.includes('/one'));
+        assert.ok(url.includes('/one-a'));
       })
       .url(`http://localhost:${port}/two`)
       .getUrl()
@@ -135,13 +136,12 @@ describe('tests', () => {
       app.close();
     });
 
-    it.only('allows accessing the loop through first looping step', () => {
+    it('allows accessing the loop through first looping step', () => {
       return browser.url(`http://localhost:${port}/loop`)
         .$('input[name="loop"][value="yes"]').click()
         .submitForm('form')
         .getUrl()
         .then((url) => {
-          console.log(url);
           assert.ok(url.includes('/two'));
         });
     });
