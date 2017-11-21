@@ -148,4 +148,27 @@ describe('tests', () => {
 
   });
 
+  describe('configurable confirm step url', () => {
+
+    before(() => {
+      app = App(require('./apps/custom-confirm-step')).listen();
+      port = app.address().port;
+    });
+
+    after(() => {
+      app.close();
+    });
+
+    it('allows accessing the loop through first looping step', () => {
+      return browser.goto('/summary')
+        .url(`http://localhost:${port}/two/edit`)
+        .submitForm('form')
+        .getUrl()
+        .then((url) => {
+          assert.ok(url.includes('/summary'));
+        });
+    });
+
+  });
+
 });

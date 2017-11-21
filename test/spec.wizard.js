@@ -27,6 +27,7 @@ describe('Form Wizard', () => {
           template: 'template',
         }
       }, {}, {
+        confirmStep: '/summary',
         templatePath: '/a/path',
         controller: obj.controller,
         formatters: 'escape'
@@ -46,6 +47,12 @@ describe('Form Wizard', () => {
     it('passes the route to the controller', () => {
       obj.controller.should.have.been.calledWithMatch({
         route: '/'
+      });
+    });
+
+    it('passes the confirm step to the controller', () => {
+      obj.controller.should.have.been.calledWithMatch({
+        confirmStep: '/summary'
       });
     });
 
