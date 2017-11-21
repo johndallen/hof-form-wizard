@@ -26,6 +26,6 @@ module.exports = (config) => {
   app.use(session({ secret: 'not a secret', resave: true, saveUninitialized: false }));
   app.use(partials(app));
   app.use(mixins());
-  app.use(Wizard(config.steps, config.fields));
+  app.use(Wizard(config.steps, config.fields, config.options));
   return app;
 };
